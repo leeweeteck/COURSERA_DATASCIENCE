@@ -1,8 +1,15 @@
+################################################################################
+#
+# 1. load the required libraries
+#
+################################################################################
+
 library(dplyr)
+
 
 ################################################################################
 #
-# set data paths
+# 2. set data paths
 #
 ################################################################################
 
@@ -25,7 +32,7 @@ features.path <- "./UCI HAR Dataset/features.txt"
 
 ################################################################################
 #
-# read in data
+# 3. read in data
 #
 ################################################################################
 
@@ -46,7 +53,7 @@ test.subj <- read.table(test.subj.path)
 
 ################################################################################
 #
-# data munging
+# 4. data munging
 #
 ################################################################################
 
@@ -73,14 +80,22 @@ full.data <-
   left_join(activity.label, by = "activityCode") %>%
   select(-activityCode)
 
+# improve the column names by removing redundant brackets & words
+colnames(full.data) <- 
+  gsub("\\(\\)", "", colnames(full.data))  # remove brackets
+
+colnames(full.data) <- 
+  gsub("BodyBody", "Body", colnames(full.data))  # remove repeated words
+
 
 ################################################################################
 #
-# create tidy (wide) data set
+# 5. create tidy (wide) data set
 #
 ################################################################################
 
 tidy.data <-
   full.data %>% group_by(subject, activity) %>% summarise_each(funs(mean))
 
-
+# export the tidy data set as a text file
+write.table(tidy.data, file = "tidyData.txt", row.names = F)
