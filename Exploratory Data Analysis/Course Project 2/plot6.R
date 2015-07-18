@@ -18,6 +18,8 @@ PM25.emission <-
   NEI[SCC %in% matched.SCC, .(total_PM25 = sum(Emissions)), by = .(fips, year)
       ][fips %in% c("24510", "06037")]
 
+## convert "fips" from character class to factor class for better visual 
+## description in plot later
 PM25.emission[, fips := factor(fips, 
                                levels = c("24510", "06037"), 
                                labels = c("Baltimore City", "Los Angeles County")
